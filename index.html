@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MASAR | مسار — رفيق الطالب</title>
+<meta name="description" content="MASAR — منصة عمانية لإنتاجية الطالب والتخطيط الذكي للدراسة. إعداد وتصميم: معاذ بن عامر الشكيري @mo3th.x">
+<meta name="theme-color" content="#1C0B0E">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;800&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1C0B0E; --bg2:#25090D; --card:#2A0E13; --ink:#F2EBDC; --ink-dim:#C9BFA8;
+  --gold:#D4A962; --gold2:#B8904A; --line:rgba(242,235,220,.14);
+  --ok:#7FC98F; --bad:#E08A8A; --accent:var(--gold);
+  --radius:18px; --font-ar:'Noto Kufi Arabic',sans-serif; --font-en:'Poppins',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ar);min-height:100vh;overflow-x:hidden}
+body.en{font-family:var(--font-en)}
+html[dir=rtl] body{font-family:var(--font-ar)}
+html[dir=ltr] body{font-family:var(--font-en)}
+::selection{background:var(--gold);color:var(--bg)}
+a{color:var(--accent)}
+/* ---------- ambient glow ---------- */
+.glow{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(700px 400px at 85% -5%,rgba(212,169,98,.08),transparent 60%),
+             radial-gradient(600px 500px at 0% 100%,rgba(212,169,98,.05),transparent 60%)}
+/* ---------- splash ---------- */
+#splash{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:34px;transition:opacity .9s,visibility .9s}
+#splash.hide{opacity:0;visibility:hidden}
+.splash-word{display:flex;gap:.12em;font-size:clamp(3rem,10vw,6.5rem);font-weight:800;letter-spacing:.18em;direction:ltr}
+.splash-word span{opacity:0;transform:translateY(30px) scale(.8);animation:letterIn .8s cubic-bezier(.2,.9,.3,1.4) forwards}
+.splash-word span:nth-child(1){animation-delay:.15s}.splash-word span:nth-child(2){animation-delay:.3s}
+.splash-word span:nth-child(3){animation-delay:.45s}.splash-word span:nth-child(4){animation-delay:.6s}
+.splash-word span:nth-child(5){animation-delay:.75s}
+.splash-word span:nth-child(odd){color:var(--ink)} .splash-word span:nth-child(even){color:var(--accent)}
+@keyframes letterIn{to{opacity:1;transform:none}}
+.splash-sub{opacity:0;animation:letterIn 1s 1.1s forwards;color:var(--ink-dim);font-size:1.05rem;letter-spacing:.3em;text-align:center}
+.splash-ar{opacity:0;animation:fadeUp 1s 1.4s forwards;font-size:1.7rem;color:var(--accent);letter-spacing:.5em;margin-inline-start:.5em}
+.splash-ring{width:120px;height:120px;position:absolute;opacity:.25}
+.splash-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid var(--gold);animation:pulseRing 2.4s infinite}
+@keyframes pulseRing{0%{transform:scale(.6);opacity:1}100%{transform:scale(2.4);opacity:0}}
+#enterBtn{opacity:0;animation:fadeUp 1s 1.9s forwards;background:transparent;border:1px solid var(--gold);
+  color:var(--ink);padding:14px 52px;border-radius:999px;font-size:1.05rem;cursor:pointer;letter-spacing:.2em;transition:.3s}
+#enterBtn:hover{background:var(--gold);color:var(--bg);box-shadow:0 0 40px rgba(212,169,98,.35)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.splash-hint{position:absolute;bottom:26px;font-size:.75rem;color:var(--ink-dim);opacity:.6}
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(28,11,14,.82);
+  border-bottom:1px solid var(--line)}
+.nav{max-width:1200px;margin:auto;display:flex;align-items:center;gap:18px;padding:14px 22px}
+.logo-mini{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.25em;cursor:pointer;user-select:none}
+.logo-mini svg{width:34px;height:34px}
+.nav-links{display:flex;gap:6px;margin-inline-start:auto;flex-wrap:wrap}
+.nav-links a{color:var(--ink-dim);text-decoration:none;font-size:.85rem;padding:8px 14px;border-radius:999px;transition:.25s}
+.nav-links a:hover{color:var(--ink);background:rgba(242,235,220,.07)}
+.lang-btn,#loginBtn{border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:999px;
+  padding:8px 18px;cursor:pointer;font-family:inherit;font-size:.85rem;transition:.25s}
+.lang-btn:hover,#loginBtn:hover{background:var(--gold);color:var(--bg)}
+#loginBtn.logged{border-color:var(--ok);color:var(--ok)}
+/* ---------- promo bar ---------- */
+#promoBar{display:none;background:linear-gradient(90deg,var(--gold2),var(--gold));color:var(--bg);text-align:center;
+  padding:8px 14px;font-size:.85rem;font-weight:600}
+#promoBar.show{display:block}
+/* ---------- sections ---------- */
+main{position:relative;z-index:1;max-width:1200px;margin:auto;padding:0 22px}
+section{padding:64px 0;border-bottom:1px solid var(--line)}
+.sec-tag{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:.8rem;letter-spacing:.3em;margin-bottom:10px}
+.sec-tag::before{content:'';width:26px;height:1px;background:var(--accent)}
+h2{font-size:clamp(1.5rem,3.5vw,2.2rem);margin-bottom:8px;font-weight:800}
+.sec-desc{color:var(--ink-dim);max-width:640px;line-height:1.9;margin-bottom:30px;font-size:.95rem}
+/* ---------- hero / dashboard ---------- */
+#hero{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;min-height:78vh;padding:70px 0}
+.hero-copy h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.25;font-weight:800}
+.hero-copy h1 em{color:var(--accent);font-style:normal}
+.hero-copy p{color:var(--ink-dim);margin:18px 0 30px;line-height:2;max-width:520px}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.btn{border:none;border-radius:999px;padding:14px 34px;font-family:inherit;font-size:.95rem;cursor:pointer;transition:.3s;font-weight:600}
+.btn.primary{background:var(--gold);color:var(--bg)}
+.btn.primary:hover{box-shadow:0 0 44px rgba(212,169,98,.4);transform:translateY(-2px)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold)}
+.clock-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:42px 36px;
+  text-align:center;position:relative;overflow:hidden}
+.clock-card::before{content:'';position:absolute;inset:0;background:radial-gradient(300px 140px at 50% 0,rgba(212,169,98,.12),transparent)}
+#liveClock{font-size:clamp(3rem,8vw,4.6rem);font-weight:800;letter-spacing:.06em;direction:ltr;
+  font-variant-numeric:tabular-nums;background:linear-gradient(180deg,var(--ink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.clock-date{color:var(--ink-dim);margin-top:6px;font-size:.9rem}
+.next-subj{margin-top:26px;padding:16px;border:1px dashed var(--line);border-radius:14px}
+.next-subj .lbl{font-size:.75rem;color:var(--ink-dim);letter-spacing:.2em}
+.next-subj .val{font-size:1.5rem;font-weight:800;color:var(--accent);margin-top:6px}
+.quote-box{margin-top:22px;min-height:52px}
+#motivQuote{font-size:1rem;line-height:1.9;color:var(--ink);opacity:1;transition:opacity .6s;font-style:italic}
+/* ---------- audio player ---------- */
+#audioDock{position:fixed;bottom:20px;inset-inline-start:20px;z-index:60;background:var(--card);
+  border:1px solid var(--line);border-radius:999px;padding:10px 16px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5)}
+#audioDock.hidden-dock{display:none}
+#audioToggle{width:44px;height:44px;border-radius:50%;border:none;background:var(--gold);color:var(--bg);
+  font-size:1.1rem;cursor:pointer;display:grid;place-items:center;transition:.3s;flex-shrink:0}
+#audioToggle.playing{animation:spinPulse 2.4s infinite}
+@keyframes spinPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,169,98,.5)}50%{box-shadow:0 0 0 12px rgba(212,169,98,0)}}
+#trackName{font-size:.8rem;color:var(--ink-dim);max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock-btn{background:transparent;border:1px solid var(--line);color:var(--ink);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:.85rem}
+#trackMenu{position:fixed;bottom:80px;inset-inline-start:20px;z-index:60;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:12px;min-width:230px;display:none;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#trackMenu.open{display:block}
+#trackMenu button.t-item{display:flex;width:100%;justify-content:space-between;align-items:center;background:transparent;border:none;
+  color:var(--ink);padding:10px 12px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:.85rem}
+#trackMenu button.t-item:hover{background:rgba(242,235,220,.08)}
+#trackMenu button.t-item.active{color:var(--gold)}
+#volSlider{width:100%;accent-color:var(--gold);margin-top:8px}
+.locktag{font-size:.62rem;color:var(--gold2);letter-spacing:.1em}
+/* ---------- AI chat ---------- */
+.chat-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:stretch}
+.chat-info{display:flex;flex-direction:column;gap:14px}
+.chat-feat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;gap:14px;align-items:flex-start}
+.chat-feat .ic{font-size:1.4rem}
+.chat-feat h4{font-size:.95rem;margin-bottom:4px}
+.chat-feat p{font-size:.8rem;color:var(--ink-dim);line-height:1.8}
+.chat-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;min-height:460px;overflow:hidden}
+#chatLog{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;max-height:420px}
+.msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:.87rem;line-height:1.8;white-space:pre-wrap}
+.msg.bot{background:rgba(242,235,220,.07);border:1px solid var(--line);align-self:flex-start;border-start-start-radius:4px}
+.msg.me{background:var(--gold);color:var(--bg);align-self:flex-end;border-end-end-radius:4px;font-weight:500}
+.chat-input{display:flex;border-top:1px solid var(--line)}
+#chatText{flex:1;background:transparent;border:none;outline:none;color:var(--ink);padding:16px 20px;font-family:inherit;font-size:.9rem}
+#chatSend{background:var(--gold);color:var(--bg);border:none;padding:0 26px;cursor:pointer;font-family:inherit;font-weight:700}
+/* ---------- platforms ---------- */
+.plat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+.plat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;gap:14px;transition:.3s}
+.plat-card:hover{border-color:var(--gold);transform:translateY(-4px)}
+.plat-logo{width:88px;height:88px;border-radius:20px;background:#fff;object-fit:contain;padding:8px;border:1px solid var(--line)}
+.plat-card h3{font-size:1.1rem}
+.plat-card p{font-size:.82rem;color:var(--ink-dim);line-height:1.9;flex:1}
+.plat-card ol{font-size:.8rem;color:var(--ink-dim);line-height:2;padding-inline-start:20px}
+.plat-actions{display:flex;gap:10px}
+.chip{font-size:.72rem;border:1px solid var(--gold2);color:var(--gold);padding:6px 14px;border-radius:999px;background:none;cursor:pointer;font-family:inherit;transition:.25s}
+.chip:hover{background:var(--gold);color:var(--bg)}
+/* ---------- schedule ---------- */
+.sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.sched-item{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative}
+.sched-item.now{border-color:var(--gold);box-shadow:0 0 30px rgba(212,169,98,.15)}
+.sched-item .t{font-size:1.25rem;font-weight:800;color:var(--gold);direction:ltr}
+.sched-item .s{margin-top:6px;font-weight:600}
+.sched-item .r{font-size:.75rem;color:var(--ink-dim);margin-top:4px}
+/* ---------- subscription ---------- */
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;align-items:stretch}
+.tier{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:34px 28px;display:flex;flex-direction:column;gap:14px;position:relative;transition:.3s}
+.tier.hot{border-color:var(--gold);transform:scale(1.02)}
+.tier.hot::after{content:'★';position:absolute;top:18px;inset-inline-end:22px;color:var(--gold)}
+.tier h3{font-size:1.1rem}
+.price{font-size:2.4rem;font-weight:800;color:var(--gold);direction:ltr}
+.price small{font-size:.85rem;color:var(--ink-dim)}
+.tier ul{list-style:none;flex:1;display:flex;flex-direction:column;gap:10px}
+.tier li{font-size:.83rem;color:var(--ink-dim);display:flex;gap:8px;align-items:flex-start;line-height:1.7}
+.tier li::before{content:'✦';color:var(--gold);font-size:.7rem;margin-top:3px}
+/* ---------- sponsors marquee ---------- */
+#sponsors{padding:40px 0;overflow:hidden}
+.marquee{display:flex;gap:50px;width:max-content;animation:marq 26s linear infinite;padding:16px 0}
+.marquee:hover{animation-play-state:paused}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+html[dir=rtl] .marquee{animation-name:marqR}
+@keyframes marqR{from{transform:translateX(0)}to{transform:translateX(50%)}}
+.sp-item{display:flex;align-items:center;gap:12px;color:var(--ink-dim);font-size:.9rem;white-space:nowrap;direction:ltr}
+.sp-item img{height:46px;border-radius:10px;background:#fff;padding:3px}
+.sp-item video{height:60px;border-radius:10px}
+/* ---------- about / footer ---------- */
+footer{border-top:1px solid var(--line);background:var(--bg2);position:relative;z-index:1}
+.about-card{max-width:760px;margin:40px auto;text-align:center;padding:50px 30px}
+.about-card .wa{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:#25D366;color:#fff;
+  padding:13px 30px;border-radius:999px;text-decoration:none;font-weight:600;transition:.3s}
+.about-card .wa:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,211,102,.3)}
+.foot-inner{max-width:1200px;margin:auto;padding:30px 22px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-dim)}
+#footLogo{cursor:pointer;user-select:none}
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;z-index:200;background:rgba(12,4,6,.78);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:34px;width:min(440px,100%);max-height:90vh;overflow-y:auto;position:relative;animation:fadeUp .4s}
+.modal-card.wide{width:min(760px,100%)}
+.modal-card h3{margin-bottom:18px}
+.x-btn{position:absolute;top:14px;inset-inline-end:16px;background:none;border:none;color:var(--ink-dim);font-size:1.3rem;cursor:pointer}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.75rem;color:var(--ink-dim);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:rgba(242,235,220,.05);border:1px solid var(--line);border-radius:12px;
+  padding:12px 16px;color:var(--ink);font-family:inherit;font-size:.9rem;outline:none;transition:.25s}
+.field input:focus,.field textarea:focus{border-color:var(--gold)}
+.oauth-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.oauth-btn{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:12px;padding:11px;cursor:pointer;font-size:.78rem;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:.25s}
+.oauth-btn:hover{border-color:var(--gold)}
+.pin-dots{display:flex;gap:12px;justify-content:center;direction:ltr;margin:18px 0}
+.pin-dots span{width:14px;height:14px;border-radius:50%;border:1px solid var(--gold2);transition:.2s}
+.pin-dots span.on{background:var(--gold);box-shadow:0 0 12px rgba(212,169,98,.6)}
+/* ---------- admin ---------- */
+.adm-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.adm-tabs button{background:transparent;border:1px solid var(--line);color:var(--ink-dim);border-radius:999px;padding:8px 16px;cursor:pointer;font-family:inherit;font-size:.78rem}
+.adm-tabs button.on{border-color:var(--gold);color:var(--gold)}
+.mperm{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--ink-dim);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.mperm input{accent-color:var(--gold)}
+.adm-pane{display:none}.adm-pane.on{display:block}
+.adm-row{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.adm-row input,.adm-row select{flex:1;min-width:140px}
+.list-box{border:1px solid var(--line);border-radius:12px;padding:10px;max-height:200px;overflow-y:auto;margin-bottom:12px}
+.list-box .li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px;border-bottom:1px dashed var(--line);font-size:.8rem}
+.del-btn{background:none;border:none;color:var(--bad);cursor:pointer;font-size:1rem}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat{background:rgba(242,235,220,.05);border-radius:14px;padding:16px;text-align:center}
+.stat b{display:block;font-size:1.6rem;color:var(--gold)}
+.stat span{font-size:.7rem;color:var(--ink-dim)}
+.switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch i{position:absolute;inset:0;background:rgba(242,235,220,.15);border-radius:99px;transition:.3s;cursor:pointer}
+.switch i::before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:var(--ink);top:3px;inset-inline-start:3px;transition:.3s}
+.switch input:checked+i{background:var(--gold)}
+.switch input:checked+i::before{transform:translateX(-20px)}
+html[dir=ltr] .switch input:checked+i::before{transform:translateX(20px)}
+/* toast */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--bg);
+  padding:12px 26px;border-radius:999px;font-size:.85rem;font-weight:600;z-index:500;opacity:0;transition:.4s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* responsive */
+@media(max-width:900px){
+  #hero{grid-template-columns:1fr;text-align:center;min-height:auto;padding:50px 0}
+  .hero-copy p{margin-inline:auto}
+  .cta-row{justify-content:center}
+  .chat-wrap{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .sched-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<!-- ================= SPLASH ================= -->
+<div id="splash" dir="rtl">
+  <div class="splash-ring"></div>
+  <div class="splash-word" dir="ltr"><span>M</span><span>A</span><span>S</span><span>A</span><span>R</span></div>
+  <div class="splash-ar">م س ا ر</div>
+  <div class="splash-sub" data-i18n="splashTag">رفيقك نحو التفوق الدراسي</div>
+  <button id="enterBtn" data-i18n="enter">ادخُل المسار</button>
+  <div class="splash-hint" data-i18n="splashHint">🔊 شغّل الصوت لتسمع الترحيب</div>
+</div>
+
+<div id="promoBar"><span id="promoText"></span></div>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <nav class="nav">
+    <div class="logo-mini" id="navLogo" title="MASAR">
+      <svg viewBox="0 0 40 40" fill="none" stroke="#F2EBDC" stroke-width="2"><path d="M6 30 V14 a5 5 0 0 1 10 0 v6 a5 5 0 0 0 10 0 v-6 a5 5 0 0 1 8 4 v12" stroke-linecap="round"/><circle cx="34" cy="31" r="2.4" fill="#D4A962" stroke="none"/></svg>
+      <span>MASAR</span>
+    </div>
+    <div class="nav-links">
+      <a href="#hero" data-i18n="navHome">الرئيسية</a>
+      <a href="#platforms" data-i18n="navPlat">المنصات</a>
+      <a href="#ai" data-i18n="navAI">المساعد الذكي</a>
+      <a href="#schedule" data-i18n="navSched">جدولي</a>
+      <a href="#subs" data-i18n="navSubs">الاشتراكات</a>
+      <a href="#about" data-i18n="navAbout">حول</a>
+    </div>
+    <button class="lang-btn" id="langBtn">EN</button>
+    <button id="loginBtn" data-i18n="login">تسجيل الدخول</button>
+  </nav>
+</header>
+
+<main>
+<!-- ================= HERO / DASHBOARD ================= -->
+<section id="hero">
+  <div class="hero-copy">
+    <span class="sec-tag" data-i18n="heroTag">منصة الطالب العمانية</span>
+    <h1 data-i18n-html="heroTitle">مسارُك نحو <em>التفوق</em> يبدأ من هنا</h1>
+    <p data-i18n="heroDesc">لوحة هادئة بلا مشتتات: وقتك، مادتك القادمة، وعبارات تُلهمك. مع مساعد ذكي يشرح لك ويخطط معك، ودليل كامل للمنصات التعليمية العمانية.</p>
+    <div class="cta-row">
+      <button class="btn primary" onclick="goSec('ai')" data-i18n="tryAI">جرّب المساعد الذكي</button>
+      <button class="btn ghost" onclick="goSec('subs')" data-i18n="seePlans">خطط الاشتراك</button>
+    </div>
+  </div>
+  <div class="clock-card">
+    <div id="liveClock">00:00:00</div>
+    <div class="clock-date" id="liveDate"></div>
+    <div class="next-subj">
+      <div class="lbl" data-i18n="nextLbl">الحصة القادمة</div>
+      <div class="val" id="nextSubj">—</div>
+    </div>
+    <div class="quote-box"><p id="motivQuote"></p></div>
+  </div>
+</section>
+
+<!-- ================= SCHEDULE ================= -->
+<section id="schedule">
+  <span class="sec-tag" data-i18n="schedTag">يومك منظّم</span>
+  <h2 data-i18n="schedTitle">جدولي الدراسي</h2>
+  <p class="sec-desc" data-i18n="schedDesc">جدولك اليومي يظهر هنا بصرياً وبدون تعقيد. الحصة الحالية تُضيء تلقائياً.</p>
+  <div class="sched-grid" id="schedGrid"></div>
+</section>
+
+<!-- ================= PLATFORMS ================= -->
+<section id="platforms">
+  <span class="sec-tag" data-i18n="platTag">أدواتك العمانية</span>
+  <h2 data-i18n="platTitle">المنصات التعليمية العمانية</h2>
+  <p class="sec-desc" data-i18n="platDesc">أدلة سريعة لأهم المنصات، والمساعد الذكي «مسار» يجيب خطوة بخطوة عن تسجيل الدخول والاستخدام وحل المشاكل.</p>
+  <div class="plat-grid">
+    <div class="plat-card">
+      <img class="plat-logo" src="https://sspark.genspark.ai/i/v0rVM2uwR7srP72O?width=2560" alt="إصرار" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'176\' height=\'176\'><rect width=\'176\' height=\'176\' rx=\'40\' fill=\'%23D4A962\'/><text x=\'88\' y=\'105\' font-size=\'52\' text-anchor=\'middle\' fill=\'%231C0B0E\' font-family=\'sans-serif\' font-weight=\'bold\'>إصرار</text></svg>'"
+      <h3>إصرار <span style="font-weight:300;font-size:.8rem">Esrar Academy</span></h3>
+      <p data-i18n="esrarDesc">أكاديمية إصرار التعليمية — دروس وشروحات للطلاب في سلطنة عمان.</p>
+      <ol>
+        <li data-i18n="esrarS1">افتح الموقع الرسمي: esraracademy.com</li>
+        <li data-i18n="esrarS2">أنشئ حساباً جديداً أو سجّل الدخول ببريدك الإلكتروني.</li>
+        <li data-i18n="esrarS3">اختر صفّك الدراسي ثم استعرض الدروس والاختبارات.</li>
+      </ol>
+      <div class="plat-actions">
+        <button class="chip" onclick="askAI('إصرار')" data-i18n="askAbout">اسأل المساعد عنها</button>
+        <a class="chip" href="https://esraracademy.com/" target="_blank" rel="noopener" data-i18n="visit">زيارة</a>
+      </div>
+    </div>
+    <div class="plat-card">
+      <img class="plat-logo" src="https://sspark.genspark.ai/i/jtYgZMHElmikJEFp?width=2560" alt="همم" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'176\' height=\'176\'><rect width=\'176\' height=\'176\' rx=\'40\' fill=\'%236FC7B6\'/><text x=\'88\' y=\'105\' font-size=\'52\' text-anchor=\'middle\' fill=\'%231C0B0E\' font-family=\'sans-serif\' font-weight=\'bold\'>همم</text></svg>'"
+      <h3>همم <span style="font-weight:300;font-size:.8rem">Hemam</span></h3>
+      <p data-i18n="hemamDesc">منصة همم التعليمية — موارد ودورات تدعم مسار الطالب.</p>
+      <ol>
+        <li data-i18n="hemamS1">افتح الموقع: hemam.org</li>
+        <li data-i18n="hemamS2">تصفح الأقسام أو سجّل حساباً للوصول للمحتوى.</li>
+        <li data-i18n="hemamS3">واجهت مشكلة تقنية؟ اسأل مسار وسيعطيك الحل خطوة بخطوة.</li>
+      </ol>
+      <div class="plat-actions">
+        <button class="chip" onclick="askAI('همم')" data-i18n="askAbout">اسأل المساعد عنها</button>
+        <a class="chip" href="https://hemam.org/" target="_blank" rel="noopener" data-i18n="visit">زيارة</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AI CHAT ================= -->
+<section id="ai">
+  <span class="sec-tag" data-i18n="aiTag">Masar AI</span>
+  <h2 data-i18n="aiTitle">مساعدك الدراسي الذكي</h2>
+  <div class="chat-wrap" style="margin-top:26px">
+    <div class="chat-info">
+      <div class="chat-feat"><span class="ic">🧠</span><div><h4 data-i18n="aiF1t">شرح المفاهيم</h4><p data-i18n="aiF1d">اطلب شرح أي درس أو فكرة بلغة بسيطة تناسب صفّك.</p></div></div>
+      <div class="chat-feat"><span class="ic">🗓️</span><div><h4 data-i18n="aiF2t">تخطيط الوقت</h4><p data-i18n="aiF2d">اطلب منه جدول مراجعة مخصصاً حسب موادك ووقتك.</p></div></div>
+      <div class="chat-feat"><span class="ic">🇴🇲</span><div><h4 data-i18n="aiF3t">دليل المنصات العمانية</h4><p data-i18n="aiF3d">مدرّب على الإجابة عن إصرار وهمم: تسجيل الدخول، الاستخدام، وحل المشاكل خطوة بخطوة.</p></div></div>
+      <div class="chat-feat"><span class="ic">⚙️</span><div><h4 data-i18n="aiF4t">ربط نموذج ذكاء اصطناعي</h4><p data-i18n="aiF4d">لوحة الإدارة ← تبويب الإعدادات: ضع مفتاح API (متوافق مع OpenAI) لتفعيل الردود الحية. بدون مفتاح يعمل المساعد بوضع الإرشادات المدمجة.</p></div></div>
+    </div>
+    <div class="chat-box">
+      <div id="chatLog"></div>
+      <div class="chat-input">
+        <input id="chatText" data-i18n-ph="chatPh" placeholder="اكتب سؤالك… مثلاً: كيف أسجل دخول إصرار؟">
+        <button id="chatSend">➤</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SUBSCRIPTIONS ================= -->
+<section id="subs">
+  <span class="sec-tag" data-i18n="subTag">اشتراك بسيط</span>
+  <h2 data-i18n="subTitle">خطط أقل من 5 ريال</h2>
+  <p class="sec-desc" data-i18n="subDesc">ادفع محلياً عبر التحويل أو البطاقات: بنك مسقط، بنك نزوى، البنك الأهلي. الدفع الحقيقي يتطلب ربط بوابة عمانية (Thawani Pay / Tap Payments) — الأزرار الحالية نقطة ربط جاهزة.</p>
+  <div class="tier-grid">
+    <div class="tier">
+      <h3 data-i18n="t1">مجاني</h3>
+      <div class="price">0 <small data-i18n="omr">ر.ع</small></div>
+      <ul>
+        <li data-i18n="t1a">الوقت والمادة القادمة والعبارات التحفيزية</li>
+        <li data-i18n="t1b">مساعد ذكي بعدد ردود محدود</li>
+        <li data-i18n="t1c">مساران صوتيان للتركيز</li>
+      </ul>
+      <button class="btn ghost" data-i18n="current">خطتك الحالية</button>
+    </div>
+    <div class="tier hot">
+      <h3 data-i18n="t2">تمريرة الفصل</h3>
+      <div class="price">3.500 <small data-i18n="omr">ر.ع</small></div>
+      <ul>
+        <li data-i18n="t2a">مساعد ذكي بلا حدود ✦</li>
+        <li data-i18n="t2b">جميع المقاطع الصوتية ✦</li>
+        <li data-i18n="t2c">ثيمات فاخرة ✦</li>
+        <li data-i18n="t2d">جدول دراسي موسّع</li>
+      </ul>
+      <button class="btn primary" onclick="openPay('semester')" data-i18n="buy">اشترك الآن</button>
+    </div>
+    <div class="tier">
+      <h3 data-i18n="t3">التمريرة السنوية</h3>
+      <div class="price">4.900 <small data-i18n="omr">ر.ع</small></div>
+      <ul>
+        <li data-i18n="t3a">كل مزايا تمريرة الفصل</li>
+        <li data-i18n="t3b">أولوية في المزايا الجديدة</li>
+        <li data-i18n="t3c">شارة مساري الذهبية</li>
+      </ul>
+      <button class="btn primary" onclick="openPay('annual')" data-i18n="buy">اشترك الآن</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPONSORS ================= -->
+<section id="sponsors">
+  <span class="sec-tag" data-i18n="spTag">شركاء النجاح</span>
+  <h2 data-i18n="spTitle">الرعاة والداعمون</h2>
+  <div class="marquee" id="marquee"></div>
+</section>
+</main>
+
+<!-- ================= FOOTER / ABOUT ================= -->
+<footer id="about">
+  <div class="about-card">
+    <svg viewBox="0 0 40 40" width="56" height="56" fill="none" stroke="#F2EBDC" stroke-width="2" id="footLogo" title="MASAR"><path d="M6 30 V14 a5 5 0 0 1 10 0 v6 a5 5 0 0 0 10 0 v-6 a5 5 0 0 1 8 4 v12" stroke-linecap="round"/><circle cx="34" cy="31" r="2.4" fill="#D4A962" stroke="none"/></svg>
+    <h2 style="margin-top:16px">MASAR <span style="letter-spacing:.4em">|</span> مسار</h2>
+    <p style="color:var(--ink-dim);line-height:2.2;margin-top:14px" data-i18n="aboutBody">
+      إعداد وتصميم التطبيق: معاذ بن عامر الشكيري (@mo3th.x)<br>
+      جميع الحقوق محفوظة © 2026 — المالك والمصمم: معاذ بن عامر الشكيري
+    </p>
+    <a class="wa" href="https://wa.me/qr/WCPJA7QNPJO3F1" target="_blank" rel="noopener">💬 WhatsApp</a>
+    <p style="color:var(--ink-dim);font-size:.8rem;margin-top:14px" data-i18n="support">للتواصل والدعم الفني المباشر عبر واتساب: 7750 6320</p>
+  </div>
+  <div class="foot-inner">
+    <span>© 2026 MASAR — <span data-i18n="devBy">تم التطوير والتصميم بواسطة معاذ بن عامر الشكيري</span> @mo3th.x</span>
+    <span data-i18n="madeInOman">صُنع بحب في سلطنة عُمان 🇴🇲</span>
+  </div>
+</footer>
+
+<!-- ================= AUDIO DOCK ================= -->
+<div id="audioDock" class="hidden-dock">
+  <button id="audioToggle">▶</button>
+  <button class="dock-btn" id="prevTrack">⏮</button>
+  <button class="dock-btn" id="nextTrack">⏭</button>
+  <span id="trackName">—</span>
+  <button class="dock-btn" id="listBtn">☰</button>
+</div>
+<div id="trackMenu">
+  <div id="trackList"></div>
+  <input type="range" id="volSlider" min="0" max="100" value="40">
+</div>
+
+<!-- ================= LOGIN MODAL ================= -->
+<div class="modal" id="loginModal"><div class="modal-card">
+  <button class="x-btn" onclick="closeModal('loginModal')">✕</button>
+  <h3 data-i18n="loginTitle">مرحباً بك في مسار</h3>
+  <div class="field"><label data-i18n="email">البريد الإلكتروني</label><input type="email" id="loginEmail"></div>
+  <div class="field"><label data-i18n="pass">كلمة المرور</label><input type="password" id="loginPass"></div>
+  <button class="btn primary" style="width:100%" id="doLogin" data-i18n="login">تسجيل الدخول</button>
+  <div class="oauth-row">
+    <button class="oauth-btn" onclick="oauthStub('Google')"><span style="color:#EA4335">G</span> Google</button>
+    <button class="oauth-btn" onclick="oauthStub('Microsoft')"><span style="color:#00A4EF">◧</span> Microsoft</button>
+    <button class="oauth-btn" onclick="oauthStub('Apple')"><span></span> Apple</button>
+  </div>
+  <p style="font-size:.72rem;color:var(--ink-dim);text-align:center" data-i18n="oauthNote">تسجيل الدخول السريع (Google / Microsoft / Apple) نقطة ربط — يتطلب إعداد OAuth خادمي.</p>
+  <p style="font-size:.8rem;text-align:center;margin-top:12px"><a href="#" id="toggleAuth" data-i18n="noAcc">ليس لديك حساب؟ إنشاء حساب جديد</a></p>
+</div></div>
+
+<!-- ================= PAY MODAL ================= -->
+<div class="modal" id="payModal"><div class="modal-card">
+  <button class="x-btn" onclick="closeModal('payModal')">✕</button>
+  <h3 id="payTitle"></h3>
+  <div class="field"><label data-i18n="payMethod">طريقة الدفع</label>
+    <select id="payBank">
+      <option value="muscat" data-i18n="bMuscat">بنك مسقط — تحويل / بطاقة</option>
+      <option value="nizwa" data-i18n="bNizwa">بنك نزوى — تحويل / بطاقة</option>
+      <option value="ahli" data-i18n="bAhli">البنك الأهلي — تحويل / بطاقة</option>
+      <option value="thawani">Thawani Pay (نقطة ربط)</option>
+      <option value="tap">Tap Payments Oman (نقطة ربط)</option>
+    </select>
+  </div>
+  <div class="field"><label data-i18n="fullName">الاسم الكامل</label><input id="payName"></div>
+  <div class="field"><label data-i18n="phoneNum">رقم الهاتف</label><input id="payPhone" dir="ltr" placeholder="+968 .."></div>
+  <div class="field"><label data-i18n="proof">رقم الإيصال / المرجع (للتحويل)</label><input id="payRef" dir="ltr"></div>
+  <div id="bankInfo" style="font-size:.78rem;color:var(--ink-dim);line-height:2;background:rgba(242,235,220,.05);border-radius:12px;padding:12px 16px;margin-bottom:14px"></div>
+  <button class="btn primary" style="width:100%" id="paySubmit" data-i18n="payConfirm">تأكيد طلب الاشتراك</button>
+  <p style="font-size:.7rem;color:var(--ink-dim);margin-top:10px;text-align:center" data-i18n="payNote">⚠️ هذه واجهة تجريبية: تأكيد الدفع الحقيقي يتم بربط بوابة عمانية خادمية (Thawani / Tap) أو التحقق اليدوي من الإيصال.</p>
+</div></div>
+
+<!-- ================= PIN MODAL ================= -->
+<div class="modal" id="pinModal"><div class="modal-card" style="text-align:center">
+  <button class="x-btn" onclick="closeModal('pinModal')">✕</button>
+  <h3 data-i18n="pinTitle">🔐 منطقة المالك</h3>
+  <p style="font-size:.8rem;color:var(--ink-dim)" data-i18n="pinDesc">أدخل الرمز السري للمتابعة</p>
+  <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span><span></span></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:240px;margin:auto" id="pinPad"></div>
+</div></div>
+
+<!-- ================= ADMIN PANEL ================= -->
+<div class="modal" id="admModal"><div class="modal-card wide">
+  <button class="x-btn" onclick="closeModal('admModal')">✕</button>
+  <h3>👑 <span data-i18n="admTitle">لوحة تحكم المالك</span> — <span style="color:var(--gold)">معاذ بن عامر الشكيري</span></h3>
+  <div class="adm-tabs">
+    <button class="on" data-tab="content" data-i18n="tabContent">المحتوى</button>
+    <button data-tab="sponsors" data-i18n="tabSponsors">الرعاة</button>
+    <button data-tab="tracks" data-i18n="tabTracks">المقاطع الصوتية</button>
+    <button data-tab="users" data-i18n="tabUsers">المستخدمون والاشتراكات</button>
+    <button data-tab="members" data-i18n="tabMembers">الأعضاء</button>
+    <button data-tab="settings" data-i18n="tabSettings">الإعدادات</button>
+  </div>
+
+  <div class="adm-pane on" id="pane-content">
+    <div class="field"><label data-i18n="lblPromo">شريط الرسالة الترويجية (اتركه فارغاً لإخفائه)</label><textarea id="admPromo" rows="2"></textarea></div>
+    <div class="field"><label data-i18n="lblQuotes">العبارات التحفيزية (كل عبارة في سطر)</label><textarea id="admQuotes" rows="5"></textarea></div>
+    <div class="field"><label data-i18n="lblSched">الجدول (كل سطر: HH:MM | المادة | القاعة)</label><textarea id="admSched" rows="6" dir="ltr"></textarea></div>
+    <button class="btn primary" id="saveContent" data-i18n="save">حفظ وتطبيق فوري</button>
+  </div>
+
+  <div class="adm-pane" id="pane-sponsors">
+    <div class="adm-row">
+      <select id="spType" style="max-width:130px"><option value="text" data-i18n="spText">نص</option><option value="image" data-i18n="spImage">صورة</option><option value="video" data-i18n="spVideo">فيديو</option></select>
+      <input id="spData" data-i18n-ph="spDataPh" placeholder="النص أو رابط الصورة/الفيديو">
+      <input id="spLabel" style="max-width:140px" data-i18n-ph="spLabelPh" placeholder="اسم الراعي">
+      <button class="btn primary" id="addSponsor" style="padding:10px 20px" data-i18n="add">إضافة</button>
+    </div>
+    <div class="list-box" id="spList"></div>
+  </div>
+
+  <div class="adm-pane" id="pane-tracks">
+    <div class="adm-row">
+      <input id="trkName" style="max-width:160px" data-i18n-ph="trkNamePh" placeholder="اسم المقطع">
+      <input id="trkUrl" data-i18n-ph="trkUrlPh" placeholder="رابط مباشر لملف صوتي (mp3)">
+      <button class="btn primary" id="addTrack" style="padding:10px 20px" data-i18n="add">إضافة</button>
+    </div>
+    <div class="list-box" id="trkList"></div>
+    <p style="font-size:.72rem;color:var(--ink-dim)" data-i18n="trkNote">المقاطع المدمجة مولّدة داخل المتصفح (أصوات تركيز). الملفات المرفوعة تُحفظ في ذاكرة هذا الجهاز (localStorage).</p>
+  </div>
+
+  <div class="adm-pane" id="pane-users">
+    <div class="stat-grid">
+      <div class="stat"><b id="stUsers">0</b><span data-i18n="stUsers">المستخدمون</span></div>
+      <div class="stat"><b id="stSubs">0</b><span data-i18n="stSubs">اشتراكات مفعّلة</span></div>
+      <div class="stat"><b id="stPay">0</b><span data-i18n="stPay">طلبات دفع</span></div>
+    </div>
+    <div class="list-box" id="userList"></div>
+  </div>
+
+  <div class="adm-pane" id="pane-members">
+    <div class="adm-row"><span style="flex:1;font-weight:600" data-i18n="mFormTitle">إضافة / تعديل عضو — القائد فقط 👑</span><input id="mNum" dir="ltr" style="max-width:110px;text-align:center" readonly placeholder="M-001"></div>
+    <div class="adm-row">
+      <input id="mName" style="max-width:150px" data-i18n-ph="mNamePh" placeholder="اسم العضو">
+      <input id="mEmail" dir="ltr" data-i18n-ph="mEmailPh" placeholder="email@example.com">
+      <input id="mPass" dir="ltr" type="text" data-i18n-ph="pass" placeholder="كلمة المرور">
+    </div>
+    <div class="adm-row" style="flex-wrap:wrap">
+      <label class="mperm"><input type="checkbox" id="pm_ai" checked> <span data-i18n="featAI">المساعد الذكي</span></label>
+      <label class="mperm"><input type="checkbox" id="pm_sched" checked> <span data-i18n="featSched">الجدول</span></label>
+      <label class="mperm"><input type="checkbox" id="pm_audio" checked> <span data-i18n="featAudio">الصوتيات</span></label>
+      <label class="mperm"><input type="checkbox" id="pm_subs" checked> <span data-i18n="featSubs">الاشتراكات</span></label>
+      <label class="mperm"><input type="checkbox" id="pm_pay"> <span data-i18n="featPay">سجل الدفع</span></label>
+    </div>
+    <div class="field"><label data-i18n="mSchedLbl">جدول العضو الخاص (كل سطر: HH:MM | المادة | القاعة)</label><textarea id="mSched" rows="4" dir="ltr" placeholder="07:30 | رياضيات | قاعة 12"></textarea></div>
+    <div class="cta-row">
+      <button class="btn primary" id="addMember" data-i18n="mAdd">إضافة عضو</button>
+      <button class="btn ghost" id="clearMemberForm" data-i18n="mClear">تفريغ النموذج</button>
+    </div>
+    <div class="list-box" id="memberList"></div>
+  </div>
+
+  <div class="adm-pane" id="pane-settings">
+    <div class="adm-row"><span style="flex:1" data-i18n="featAI">المساعد الذكي</span><label class="switch"><input type="checkbox" id="f_ai" checked><i></i></label></div>
+    <div class="adm-row"><span style="flex:1" data-i18n="featAudio">المشغل الصوتي</span><label class="switch"><input type="checkbox" id="f_audio" checked><i></i></label></div>
+    <div class="adm-row"><span style="flex:1" data-i18n="featSubs">قسم الاشتراكات</span><label class="switch"><input type="checkbox" id="f_subs" checked><i></i></label></div>
+    <div class="adm-row"><span style="flex:1" data-i18n="featSched">الجدول</span><label class="switch"><input type="checkbox" id="f_sched" checked><i></i></label></div>
+    <div class="adm-row"><span style="flex:1" data-i18n="featSponsors">شريط الرعاة</span><label class="switch"><input type="checkbox" id="f_sponsors" checked><i></i></label></div>
+    <div class="field" style="margin-top:14px"><label data-i18n="lblApi">مفتاح API لنموذج الذكاء الاصطناعي (يُحفظ محلياً في هذا الجهاز فقط — لا يُنشر أبداً في الكود)</label><input id="admApiKey" dir="ltr" placeholder="sk-... (OpenAI-compatible)"></div>
+    <div class="field"><label data-i18n="lblApiUrl">عنوان الـ Endpoint</label><input id="admApiUrl" dir="ltr" value="https://api.openai.com/v1/chat/completions"></div>
+    <div class="field"><label data-i18n="lblTheme">ثيم الموقع (ميزة مشتركين — للعرض)</label>
+      <select id="admTheme"><option value="gold" data-i18n="thGold">ذهبي فاخر</option><option value="teal" data-i18n="thTeal">فيروزي ليلي</option><option value="rose" data-i18n="thRose">وردي عنابي</option></select>
+    </div>
+    <button class="btn primary" id="saveSettings" data-i18n="save">حفظ وتطبيق فوري</button>
+    <button class="btn ghost" id="exportData" style="margin-top:10px" data-i18n="exportData">تصدير نسخة احتياطية (JSON)</button>
+    <p style="font-size:.7rem;color:var(--bad);margin-top:14px" data-i18n="admWarn">⚠️ تنبيه أمني: هذه اللوحة تعمل من جهة المتصفح (client-side) وتخزن البيانات في localStorage — مناسبة للعرض والتجربة فقط. لوحة إدارة حقيقية وآمنة تحتاج خادماً خلفياً (Backend) بصلاحيات ومصادقة خادمية.</p>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+/* ============ MASAR — app logic (OWNER: Muath Bin Amer Al-Shukairi @mo3th.x) ============ */
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const LS='masar_state_v1';
+const PIN='76208'; /* المالك فقط: معاذ بن عامر الشكري */
+
+/* ---------- default state ---------- */
+const DEF={
+ lang:'ar',
+ quotes:{ar:["مستقبلك يبدأ الآن","كل صفحة تقرأها اليوم… خطوة نحو حلمك","النجاح مجموع خطوات صغيرة تتكرر كل يوم","لا تنتظر الإلهام… ابدأ وسيأتي","دراستك استثمار… وعائدك مستقبلك","التركيز مهارة… والتكرار صنعها"],
+         en:["Your future starts now","Every page you read today is a step toward your dream","Success is small steps repeated daily","Don't wait for inspiration… start and it will come","Your study is an investment… your future is the return","Focus is a skill… repetition builds it"]},
+ promo:'',
+ schedule:[{t:'07:30',s:'رياضيات',r:'قاعة 12'},{t:'09:00',s:'فيزياء',r:'مختبر 3'},{t:'10:30',s:'استراحة',r:''},{t:'11:00',s:'لغة عربية',r:'قاعة 5'},{t:'12:30',s:'إنجليزي',r:'قاعة 8'}],
+ sponsors:[{type:'text',data:'✦ شركتك هنا — ادعم طلاب عُمان',label:''},{type:'text',data:'✦ بالتعاون مع أكاديمية إصرار',label:''},{type:'text',data:'✦ شريك النجاح التالي… انت',label:''}],
+ tracks:[],
+ features:{ai:true,audio:true,subs:true,sched:true,sponsors:true},
+ theme:'gold', users:[], payments:[], apiKey:'', apiUrl:'https://api.openai.com/v1/chat/completions', members:[]
+};
+let S=load();
+function deep(o){return JSON.parse(JSON.stringify(o))}
+function load(){try{const s=JSON.parse(localStorage.getItem(LS));return s?Object.assign(deep(DEF),s):deep(DEF)}catch(e){return deep(DEF)}}
+function save(){localStorage.setItem(LS,JSON.stringify(S))}
+
+/* ---------- i18n ---------- */
+const I18N={
+ ar:{splashTag:'رفيقك نحو التفوق الدراسي',enter:'ادخُل المسار',splashHint:'🔊 شغّل الصوت لتسمع الترحيب',
+  tabMembers:'الأعضاء',mFormTitle:'إضافة / تعديل عضو — القائد فقط 👑',mNamePh:'اسم العضو',mEmailPh:'email@example.com',featPay:'سجل الدفع',mSchedLbl:'جدول العضو الخاص (كل سطر: HH:MM | المادة | القاعة)',mAdd:'إضافة عضو',mUpdate:'حفظ التعديل',mClear:'تفريغ النموذج',mNone:'لا أعضاء بعد — أضف أول عضو',memberWelcome:'مرحباً',wrongPass:'كلمة المرور غير صحيحة',mDeleted:'تم حذف العضو',mSaved:'تم حفظ العضو',mDup:'هذا البريد مسجّل كعضو بالفعل',myId:'رقم عضويتك',mySched:'جدولك الخاص',
+  navHome:'الرئيسية',navPlat:'المنصات',navAI:'المساعد الذكي',navSched:'جدولي',navSubs:'الاشتراكات',navAbout:'حول',
+  login:'تسجيل الدخول',heroTag:'منصة الطالب العمانية',heroTitle:'مسارُك نحو <em>التفوق</em> يبدأ من هنا',
+  heroDesc:'لوحة هادئة بلا مشتتات: وقتك، مادتك القادمة، وعبارات تُلهمك. مع مساعد ذكي يشرح لك ويخطط معك، ودليل كامل للمنصات التعليمية العمانية.',
+  tryAI:'جرّب المساعد الذكي',seePlans:'خطط الاشتراك',nextLbl:'الحصة القادمة',breakTxt:'استراحة',
+  schedTag:'يومك منظّم',schedTitle:'جدولي الدراسي',schedDesc:'جدولك اليومي يظهر هنا بصرياً وبدون تعقيد. الحصة الحالية تُضيء تلقائياً.',
+  platTag:'أدواتك العمانية',platTitle:'المنصات التعليمية العمانية',platDesc:'أدلة سريعة لأهم المنصات، والمساعد الذكي «مسار» يجيب خطوة بخطوة عن تسجيل الدخول والاستخدام وحل المشاكل.',
+  esrarDesc:'أكاديمية إصرار التعليمية — دروس وشروحات للطلاب في سلطنة عُمان.',hemamDesc:'منصة همم التعليمية — موارد ودورات تدعم مسار الطالب.',
+  esrarS1:'افتح الموقع الرسمي: esraracademy.com',esrarS2:'أنشئ حساباً جديداً أو سجّل الدخول ببريدك الإلكتروني.',esrarS3:'اختر صفّك الدراسي ثم استعرض الدروس والاختبارات.',
+  hemamS1:'افتح الموقع: hemam.org',hemamS2:'تصفح الأقسام أو سجّل حساباً للوصول للمحتوى.',hemamS3:'واجهت مشكلة تقنية؟ اسأل مسار وسيعطيك الحل خطوة بخطوة.',
+  askAbout:'اسأل المساعد عنها',visit:'زيارة',aiTag:'Masar AI',aiTitle:'مساعدك الدراسي الذكي',
+  aiF1t:'شرح المفاهيم',aiF1d:'اطلب شرح أي درس أو فكرة بلغة بسيطة تناسب صفّك.',aiF2t:'تخطيط الوقت',aiF2d:'اطلب منه جدول مراجعة مخصصاً حسب موادك ووقتك.',
+  aiF3t:'دليل المنصات العمانية',aiF3d:'مدرّب على الإجابة عن إصرار وهمم: تسجيل الدخول، الاستخدام، وحل المشاكل خطوة بخطوة.',
+  aiF4t:'ربط نموذج ذكاء اصطناعي',aiF4d:'لوحة الإدارة ← تبويب الإعدادات: ضع مفتاح API (متوافق مع OpenAI) لتفعيل الردود الحية. بدون مفتاح يعمل المساعد بوضع الإرشادات المدمجة.',
+  chatPh:'اكتب سؤالك… مثلاً: كيف أسجل دخول إصرار؟',subTag:'اشتراك بسيط',subTitle:'خطط أقل من 5 ريال',
+  subDesc:'ادفع محلياً عبر التحويل أو البطاقات: بنك مسقط، بنك نزوى، البنك الأهلي. الدفع الحقيقي يتطلب ربط بوابة عمانية (Thawani Pay / Tap Payments) — الأزرار الحالية نقطة ربط جاهزة.',
+  omr:'ر.ع',t1:'مجاني',t1a:'الوقت والمادة القادمة والعبارات التحفيزية',t1b:'مساعد ذكي بعدد ردود محدود',t1c:'مساران صوتيان للتركيز',current:'خطتك الحالية',
+  t2:'تمريرة الفصل',t2a:'مساعد ذكي بلا حدود ✦',t2b:'جميع المقاطع الصوتية ✦',t2c:'ثيمات فاخرة ✦',t2d:'جدول دراسي موسّع',buy:'اشترك الآن',
+  t3:'التمريرة السنوية',t3a:'كل مزايا تمريرة الفصل',t3b:'أولوية في المزايا الجديدة',t3c:'شارة مساري الذهبية',
+  spTag:'شركاء النجاح',spTitle:'الرعاة والداعمون',aboutBody:'إعداد وتصميم التطبيق: معاذ بن عامر الشكيري (@mo3th.x)<br>جميع الحقوق محفوظة © 2026 — المالك والمصمم: معاذ بن عامر الشكيري',
+  support:'للتواصل والدعم الفني المباشر عبر واتساب: 7750 6320',devBy:'تم التطوير والتصميم بواسطة معاذ بن عامر الشكيري',madeInOman:'صُنع بحب في سلطنة عُمان 🇴🇲',
+  loginTitle:'مرحباً بك في مسار',email:'البريد الإلكتروني',pass:'كلمة المرور',noAcc:'ليس لديك حساب؟ إنشاء حساب جديد',
+  oauthNote:'تسجيل الدخول السريع (Google / Microsoft / Apple) نقطة ربط — يتطلب إعداد OAuth خادمي.',
+  payMethod:'طريقة الدفع',bMuscat:'بنك مسقط — تحويل / بطاقة',bNizwa:'بنك نزوى — تحويل / بطاقة',bAhli:'البنك الأهلي — تحويل / بطاقة',
+  fullName:'الاسم الكامل',phoneNum:'رقم الهاتف',proof:'رقم الإيصال / المرجع (للتحويل)',payConfirm:'تأكيد طلب الاشتراك',
+  payNote:'⚠️ هذه واجهة تجريبية: تأكيد الدفع الحقيقي يتم بربط بوابة عمانية خادمية (Thawani / Tap) أو التحقق اليدوي من الإيصال.',
+  pinTitle:'🔐 منطقة المالك',pinDesc:'أدخل الرمز السري للمتابعة',admTitle:'لوحة تحكم المالك',
+  tabContent:'المحتوى',tabSponsors:'الرعاة',tabTracks:'المقاطع الصوتية',tabUsers:'المستخدمون والاشتراكات',tabSettings:'الإعدادات',
+  lblPromo:'شريط الرسالة الترويجية (اتركه فارغاً لإخفائه)',lblQuotes:'العبارات التحفيزية (كل عبارة في سطر)',lblSched:'الجدول (كل سطر: HH:MM | المادة | القاعة)',save:'حفظ وتطبيق فوري',
+  spText:'نص',spImage:'صورة',spVideo:'فيديو',spDataPh:'النص أو رابط الصورة/الفيديو',spLabelPh:'اسم الراعي',add:'إضافة',
+  trkNamePh:'اسم المقطع',trkUrlPh:'رابط مباشر لملف صوتي (mp3)',trkNote:'المقاطع المدمجة مولّدة داخل المتصفح (أصوات تركيز). الملفات المرفوعة تُحفظ في ذاكرة هذا الجهاز (localStorage).',
+  stUsers:'المستخدمون',stSubs:'اشتراكات مفعّلة',stPay:'طلبات دفع',
+  featAI:'المساعد الذكي',featAudio:'المشغل الصوتي',featSubs:'قسم الاشتراكات',featSched:'الجدول',featSponsors:'شريط الرعاة',
+  lblApi:'مفتاح API لنموذج الذكاء الاصطناعي (يُحفظ محلياً في هذا الجهاز فقط — لا يُنشر أبداً في الكود)',lblApiUrl:'عنوان الـ Endpoint',
+  lblTheme:'ثيم الموقع (ميزة مشتركين — للعرض)',thGold:'ذهبي فاخر',thTeal:'فيروزي ليلي',thRose:'وردي عنابي',
+  exportData:'تصدير نسخة احتياطية (JSON)',
+  admWarn:'⚠️ تنبيه أمني: هذه اللوحة تعمل من جهة المتصفح (client-side) وتخزن البيانات في localStorage — مناسبة للعرض والتجربة فقط. لوحة إدارة حقيقية وآمنة تحتاج خادماً خلفياً (Backend) بصلاحيات ومصادقة خادمية.',
+  bankInfo:'تفاصيل الحساب التوضيحية تُعرض هنا بعد تفعيل البوابة الحقيقية.',
+  chatWelcome:'أهلاً! أنا مسار 🤖 مساعدك الدراسي.\nاسألني عن: شرح درس، تنظيم وقتك، أو كيفية استخدام منصات إصرار وهمم.',
+  toastSaved:'✅ تم الحفظ والتطبيق',toastPay:'✅ تم استلام طلبك! سيتم التأكد من الدفع قريباً.',toastLogin:'✅ تم تسجيل الدخول (تجريبي)',toastAcc:'✅ تم إنشاء الحساب (تجريبي)',
+  wrongPin:'رمز خاطئ',welcomeToast:'أهلاً بك في مسار 👋'},
+ en:{splashTag:'Your companion to academic excellence',enter:'Enter MASAR',splashHint:'🔊 Turn sound on to hear the welcome',
+  tabMembers:'Members',mFormTitle:'Add / edit member — leader only 👑',mNamePh:'Member name',mEmailPh:'email@example.com',featPay:'Payments log',mSchedLbl:"Member's own schedule (per line: HH:MM | Subject | Room)",mAdd:'Add member',mUpdate:'Save changes',mClear:'Clear form',mNone:'No members yet — add the first one',memberWelcome:'Welcome',wrongPass:'Wrong password',mDeleted:'Member deleted',mSaved:'Member saved',mDup:'This email is already a member',myId:'Your member ID',mySched:'Your schedule',
+  navHome:'Home',navPlat:'Platforms',navAI:'AI Assistant',navSched:'Schedule',navSubs:'Plans',navAbout:'About',
+  login:'Sign in',heroTag:'The Omani student platform',heroTitle:'Your path to <em>excellence</em> starts here',
+  heroDesc:'A calm, distraction-free dashboard: your time, your next class, and inspiring quotes. Plus an AI assistant that explains and plans with you, and a full guide to Omani learning platforms.',
+  tryAI:'Try the AI Assistant',seePlans:'View plans',nextLbl:'Next class',breakTxt:'Break',
+  schedTag:'Your day, organized',schedTitle:'My Study Schedule',schedDesc:'Your daily plan rendered visually with zero clutter. The current period lights up automatically.',
+  platTag:'Your Omani tools',platTitle:'Omani Learning Platforms',platDesc:'Quick guides to the key platforms — the MASAR AI answers step-by-step about login, usage and troubleshooting.',
+  esrarDesc:'Esrar Academy — lessons and explanations for students in Oman.',hemamDesc:'Hemam platform — resources and courses supporting the student journey.',
+  esrarS1:'Open the official site: esraracademy.com',esrarS2:'Create a new account or sign in with your email.',esrarS3:'Pick your grade, then browse lessons and quizzes.',
+  hemamS1:'Open the site: hemam.org',hemamS2:'Browse sections or create an account for full access.',hemamS3:'Hit a technical issue? Ask MASAR for a step-by-step fix.',
+  askAbout:'Ask the assistant',visit:'Visit',aiTag:'Masar AI',aiTitle:'Your Smart Study Assistant',
+  aiF1t:'Explain concepts',aiF1d:'Ask for a simple explanation of any lesson or idea for your grade.',aiF2t:'Time planning',aiF2d:'Request a custom revision plan based on your subjects and time.',
+  aiF3t:'Omani platforms guide',aiF3d:'Trained on Esrar & Hemam: login, usage, and step-by-step troubleshooting.',
+  aiF4t:'LLM connection',aiF4d:'Admin panel → Settings: add an API key (OpenAI-compatible) for live replies. Without a key the assistant runs in built-in guidance mode.',
+  chatPh:'Type your question… e.g. How do I log in to Esrar?',subTag:'Simple pricing',subTitle:'Plans under 5 OMR',
+  subDesc:'Pay locally by transfer or card: Bank Muscat, Bank Nizwa, Ahli Bank. Real payments require an Omani gateway (Thawani Pay / Tap Payments) — current buttons are ready integration points.',
+  omr:'OMR',t1:'Free',t1a:'Clock, next class & motivational quotes',t1b:'AI assistant with limited replies',t1c:'Two focus sound tracks',current:'Your current plan',
+  t2:'Semester Pass',t2a:'Unlimited AI assistant ✦',t2b:'All ambient tracks ✦',t2c:'Luxury themes ✦',t2d:'Extended study schedule',buy:'Subscribe',
+  t3:'Annual Pass',t3a:'Everything in Semester Pass',t3b:'Priority access to new features',t3c:'Golden MASAR badge',
+  spTag:'Partners of success',spTitle:'Sponsors & Supporters',aboutBody:'Prepared & designed by: Muath Bin Amer Al-Shukairi (@mo3th.x)<br>All rights reserved © 2026 — Owner & Designer: Muath Bin Amer Al-Shukairi',
+  support:'Direct technical support via WhatsApp: 7750 6320',devBy:'Developed & designed by Muath Bin Amer Al-Shukairi',madeInOman:'Made with love in Oman 🇴🇲',
+  loginTitle:'Welcome to MASAR',email:'Email',pass:'Password',noAcc:'No account? Create one',
+  oauthNote:'Quick sign-in (Google / Microsoft / Apple) is an integration point — requires server-side OAuth setup.',
+  payMethod:'Payment method',bMuscat:'Bank Muscat — transfer / card',bNizwa:'Bank Nizwa — transfer / card',bAhli:'Ahli Bank — transfer / card',
+  fullName:'Full name',phoneNum:'Phone number',proof:'Receipt / reference no. (for transfer)',payConfirm:'Confirm subscription request',
+  payNote:'⚠️ Demo UI: real payment confirmation requires a server-side Omani gateway (Thawani / Tap) or manual receipt verification.',
+  pinTitle:'🔐 Owner zone',pinDesc:'Enter the secret PIN to continue',admTitle:"Owner's Panel",
+  tabContent:'Content',tabSponsors:'Sponsors',tabTracks:'Audio tracks',tabUsers:'Users & subs',tabSettings:'Settings',
+  lblPromo:'Promo bar message (leave empty to hide)',lblQuotes:'Motivational quotes (one per line)',lblSched:'Schedule (per line: HH:MM | Subject | Room)',save:'Save & apply instantly',
+  spText:'Text',spImage:'Image',spVideo:'Video',spDataPh:'Text or image/video URL',spLabelPh:'Sponsor name',add:'Add',
+  trkNamePh:'Track name',trkUrlPh:'Direct audio file URL (mp3)',trkNote:'Built-in tracks are generated in-browser (focus sounds). Uploaded files are stored in this device (localStorage).',
+  stUsers:'Users',stSubs:'Active subs',stPay:'Payment requests',
+  featAI:'AI assistant',featAudio:'Audio player',featSubs:'Subscriptions section',featSched:'Schedule',featSponsors:'Sponsor marquee',
+  lblApi:'LLM API key (stored locally on this device only — never published in code)',lblApiUrl:'Endpoint URL',
+  lblTheme:'Site theme (premium feature — display)',thGold:'Luxury Gold',thTeal:'Night Teal',thRose:'Burgundy Rose',
+  exportData:'Export backup (JSON)',
+  admWarn:'⚠️ Security note: this panel runs client-side and stores data in localStorage — suitable for demo/presentation only. A real secure admin needs a backend with server-side authentication.',
+  bankInfo:'Illustrative account details appear here once the real gateway is enabled.',
+  chatWelcome:"Hi! I'm MASAR 🤖 your study assistant.\nAsk me about: explaining a lesson, organizing your time, or using the Esrar & Hemam platforms.",
+  toastSaved:'✅ Saved & applied',toastPay:'✅ Request received! Payment will be verified shortly.',toastLogin:'✅ Signed in (demo)',toastAcc:'✅ Account created (demo)',
+  wrongPin:'Wrong PIN',welcomeToast:'Welcome to MASAR 👋'}
+};
+function T(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.ar[k]||k}
+function applyLang(l){
+ S.lang=l;save();
+ document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';
+ document.body.classList.toggle('en',l==='en');
+ $('#langBtn').textContent=l==='ar'?'EN':'ع';
+ $$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T(k)!==undefined)el.textContent=T(k)});
+ $$('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dataset.i18nHtml)});
+ $$('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
+ $('#splash .splash-ar').style.display=l==='ar'?'block':'none';
+ $('#splash .splash-word').style.display=l==='en'?'flex':'none';
+ renderQuote(true);renderSchedule();fillAdmin();
+}
+$('#langBtn').onclick=()=>applyLang(S.lang==='ar'?'en':'ar');
+
+/* ---------- toast ---------- */
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600)}
+
+/* ---------- splash & welcome audio ---------- */
+const WELCOME_URL='https://www.genspark.ai/api/files/s/JcLkBvDe';
+let welcomeAudio=new Audio(WELCOME_URL);welcomeAudio.preload='auto';welcomeAudio.volume=.9;
+$('#enterBtn').onclick=()=>{
+  $('#splash').classList.add('hide');
+  try{const p=welcomeAudio.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}
+  setTimeout(()=>toast(T('welcomeToast')),700);
+  setTimeout(()=>{try{welcomeAudio.pause()}catch(e){}},10000);
+  document.body.style.overflow='auto';
+};
+document.body.style.overflow='hidden';
+
+/* ---------- clock / next subject / quotes ---------- */
+const DAYS={ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
+const MON={ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
+let qi=0,qTimer;
+function renderQuote(fast){
+  const list=S.quotes[S.lang]||S.quotes.ar;
+  const el=$('#motivQuote');el.style.opacity=0;
+  setTimeout(()=>{el.textContent='« '+list[qi%list.length]+' »';el.style.opacity=1},fast?50:500);
+}
+function tick(){
+  const n=new Date();const p=x=>String(x).padStart(2,'0');
+  $('#liveClock').textContent=p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds());
+  $('#liveDate').textContent=DAYS[S.lang][n.getDay()]+' — '+n.getDate()+' '+MON[S.lang][n.getMonth()]+' '+n.getFullYear();
+  const hm=p(n.getHours())+':'+p(n.getMinutes());
+  const nxt=(S.schedule||[]).find(x=>x.t>hm);
+  $('#nextSubj').textContent=nxt?nxt.s:T('breakTxt');
+  markNow(hm);
+}
+setInterval(tick,1000);
+
+/* ---------- schedule ---------- */
+function markNow(hm){
+  $$('#schedGrid .sched-item').forEach(el=>{
+    const t=el.dataset.t;el.classList.toggle('now',t<=hm&&hm<addMin(t));
+  });
+}
+function addMin(t){const[h,m]=t.split(':').map(Number);return String(h).padStart(2,'0')+':'+String(m+45).padStart(2,'0')}
+function renderSchedule(){
+  const g=$('#schedGrid');g.innerHTML='';
+  const cm=curMember();
+  const hasSched=!cm||(cm.perms&&cm.perms.sched!==false);
+  const list=cm?((hasSched&&cm.schedule&&cm.schedule.length)?cm.schedule:(hasSched?(S.schedule||[]):[])):(S.schedule||[]);
+  if(cm&&hasSched){const tag=document.createElement('div');tag.style.cssText='grid-column:1/-1;font-size:.8rem;color:var(--gold);margin-bottom:4px';tag.textContent='🪪 '+T('mySched')+' — '+T('myId')+': '+cm.num;g.appendChild(tag)}
+  list.forEach(it=>{
+    const d=document.createElement('div');d.className='sched-item';d.dataset.t=it.t;
+    d.innerHTML=`<div class="t">${it.t}</div><div class="s">${it.s}</div>${it.r?`<div class="r">${it.r}</div>`:''}`;
+    g.appendChild(d);
+  });
+  tick();
+}
+
+/* ---------- ambient audio engine (browser-generated focus sounds) ---------- */
+let actx=null,curNodes=[],playing=false,curTrack=0,volume=.4;
+function ac(){if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();return actx}
+const GEN=[
+ {name:'مطر ناعم / Soft Rain',fn:rain},{name:'تركيز عميق / Deep Focus',fn:focusPad},{name:'ليلة لو-فاي / Night Lo-Fi',fn:lofi}
+];
+function stopAll(){curNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect()}catch(e){}});curNodes=[];playing=false;$('#audioToggle').textContent='▶';$('#audioToggle').classList.remove('playing')}
+function noiseBuf(ctx,sec=2){const b=ctx.createBuffer(1,ctx.sampleRate*sec,ctx.sampleRate);const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
+function rain(){
+ const c=ac(),src=c.createBufferSource();src.buffer=noiseBuf(c);src.loop=true;
+ const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=900;
+ const g=c.createGain();g.gain.value=volume*.5;src.connect(f).connect(g).connect(c.destination);src.start();curNodes=[src,g];
+}
+function pad(freq,detune){
+ const c=ac(),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=freq;o.detune.value=detune;
+ g.gain.value=volume*.12;o.connect(g).connect(c.destination);o.start();curNodes.push(o,g);
+}
+function focusPad(){pad(110,0);pad(165,4);pad(220,-6);pad(275,3);playing=true}
+function lofi(){
+ focusPad();
+ const c=ac(),src=c.createBufferSource();src.buffer=noiseBuf(c,4);src.loop=true;
+ const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=300;f.Q.value=.6;
+ const g=c.createGain();g.gain.value=volume*.06;src.connect(f).connect(g).connect(c.destination);src.start();curNodes.push(src,g);
+ playing=true;
+}
+function allTracks(){return GEN.map(g=>({gen:g})).concat((S.tracks||[]).map(t=>({url:t.url,name:t.name})))}
+function playCur(){
+  try{
+  stopAll();
+  const tr=allTracks()[curTrack];if(!tr)return;
+  $('#trackName').textContent=tr.name||(tr.url||'').split('/').pop();
+  if(tr.gen){tr.gen.fn()}else{const a=new Audio(tr.url);a.volume=volume;a.loop=true;a.play().catch(()=>toast('⚠️ / 🔊'));curNodes=[a];playing=true}
+  $('#audioToggle').textContent='⏸';$('#audioToggle').classList.add('playing');
+  }catch(e){console.warn('audio:',e.message)}
+}
+$('#audioToggle').onclick=()=>{if(playing){stopAll();$('#audioToggle').textContent='▶';$('#audioToggle').classList.remove('playing')}else playCur()};
+$('#nextTrack').onclick=()=>{curTrack=(curTrack+1)%allTracks().length;playCur()};
+$('#prevTrack').onclick=()=>{curTrack=(curTrack-1+allTracks().length)%allTracks().length;playCur()};
+$('#listBtn').onclick=()=>{const m=$('#trackMenu');m.classList.toggle('open');if(m.classList.contains('open'))renderTrackList()};
+$('#volSlider').oninput=e=>{volume=e.target.value/100;if(curNodes[0]&&curNodes[0].gain)curNodes[0].gain.value=volume*(S.tracks?1:1)*.5;else if(curNodes[0]&&curNodes[0].volume)curNodes[0].volume=volume};
+function renderTrackList(){
+  const l=$('#trackList');l.innerHTML='';
+  allTracks().forEach((t,i)=>{
+    const b=document.createElement('button');b.className='t-item'+(i===curTrack?' active':'');
+    b.innerHTML=`<span>${t.name||t.url.split('/').pop()}</span>${i<GEN.length?'<span class="locktag">'+(S.features.subs?'PRO-ALL':'2 FREE')+'</span>':'<span>★</span>'}`;
+    b.onclick=()=>{curTrack=i;playCur();renderTrackList()};l.appendChild(b);
+  });
+}
+
+/* ---------- AI CHAT ---------- */
+const KB=[
+ {kw:['إصرار','esrar'],ar:`📌 أكاديمية إصرار التعليمية (esraracademy.com):\n1️⃣ افتح الموقع الرسمي.\n2️⃣ اضغط "تسجيل الدخول" وأدخل بريدك وكلمة المرور — أو أنشئ حساباً جديداً.\n3️⃣ اختر صفّك الدراسي ثم استعرض الدروس.\n❗ نسيت كلمة المرور؟ استخدم "نسيت كلمة المرور" وستصلك رسالة على بريدك.`,en:`📌 Esrar Academy (esraracademy.com):\n1️⃣ Open the official site.\n2️⃣ Tap "Sign in", enter your email & password — or create a new account.\n3️⃣ Choose your grade and browse lessons.\n❗ Forgot your password? Use "Forgot password" and check your email.`},
+ {kw:['همم','hemam'],ar:`📌 منصة همم التعليمية (hemam.org):\n1️⃣ افتح الموقع.\n2️⃣ تصفح الأقسام أو أنشئ حساباً للوصول الكامل.\n3️⃣ لدعم تقني أسرع اسألني عن المشكلة بالتفصيل (مثلاً: لا يظهر لي الفيديو).`,en:`📌 Hemam platform (hemam.org):\n1️⃣ Open the site.\n2️⃣ Browse sections or create an account for full access.\n3️⃣ For faster support, describe your issue in detail (e.g. video not showing).`},
+ {kw:['جدول','schedule','وقت','time','خطة','plan'],ar:`🗓️ خطة مراجعة مقترحة:\n• 25 دقيقة تركيز + 5 راحة (بومودورو ×4)\n• ابدأ بأصعب مادة وعقلك صافٍ\n• راحة طويلة 20 دقيقة كل ساعتين\n• راجع قبل النوم 10 دقائق (تثبيت الذاكرة)\nقل لي موادك وأسلك لك جدولاً كاملاً!`,en:`🗓️ Suggested revision plan:\n• 25 min focus + 5 break (Pomodoro ×4)\n• Start with the hardest subject on a fresh mind\n• Long 20-min break every 2 hours\n• 10-min review before sleep (memory consolidation)\nTell me your subjects and I'll build a full plan!`},
+ {kw:['مرحبا','سلام','hello','hi','اهلا','أهلا'],ar:'أهلاً بك! 🌟 كيف أساعدك اليوم: شرح درس؟ تنظيم وقت؟ أم دليل المنصات؟',en:'Hello! 🌟 How can I help: explain a lesson, plan your time, or platform guide?'},
+ {kw:['اشتراك','سعر','price','subscri','دفع','pay'],ar:'💎 الخطط: تمريرة الفصل 3.500 ر.ع — التمريرة السنوية 4.900 ر.ع. الدفع عبر بنك مسقط/نزوى/الأهلي — انزل لقسم الاشتراكات بالأسفل.',en:'💎 Plans: Semester Pass 3.500 OMR — Annual Pass 4.900 OMR. Pay via Bank Muscat/Nizwa/Ahli — see the Plans section below.'}
+];
+function kbReply(q){
+  const lq=q.toLowerCase();
+  for(const k of KB){if(k.kw.some(w=>lq.includes(w)))return S.lang==='ar'?k.ar:k.en}
+  return S.lang==='ar'
+   ?`سؤال جيد! 🤔\nجرّب أن تسألني بصيغة أوضح، مثلاً:\n• "اشرح لي قوانين نيوتن"\n• "اصنع لي جدول مراجعة لـ 4 مواد"\n• "كيف أسجل دخول إصرار؟"\n💡 ولتفعيل الذكاء الاصطناعي الحي، أضف مفتاح API من لوحة الإدارة (الإعدادات).`
+   :`Good question! 🤔\nTry asking more specifically, e.g.:\n• "Explain Newton's laws"\n• "Make me a revision plan for 4 subjects"\n• "How do I log in to Esrar?"\n💡 To enable live AI, add an API key in the Admin Panel (Settings).`;
+}
+function addMsg(txt,who){
+  const d=document.createElement('div');d.className='msg '+who;d.textContent=txt;
+  $('#chatLog').appendChild(d);$('#chatLog').scrollTop=1e6;return d;
+}
+async function aiSend(){
+  const inp=$('#chatText');const q=inp.value.trim();if(!q)return;inp.value='';
+  addMsg(q,'me');const think=addMsg('…','bot');
+  if(S.apiKey){
+    try{
+      const sys=S.lang==='ar'
+        ?'أنت "مسار"، مساعد دراسي عماني ودود. تجيب بالعربية بإيجاز وخطوات مرقمة. تساعد في: الشرح، تنظيم الوقت، ودليل منصتي إصرار (esraracademy.com) وهمم (hemam.org) للتسجيل وحل المشاكل.'
+        :'You are "MASAR", a friendly Omani study assistant. Reply in English, concise, numbered steps. Help with: explanations, time planning, and guides for Esrar (esraracademy.com) and Hemam (hemam.org) platforms.';
+      const r=await fetch(S.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},
+        body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:sys},{role:'user',content:q}]})});
+      const j=await r.json();think.textContent=j.choices?.[0]?.message?.content||kbReply(q);
+    }catch(e){think.textContent=kbReply(q)}
+  }else{
+    setTimeout(()=>{think.textContent=kbReply(q);$('#chatLog').scrollTop=1e6},700+S.replies%3*400);
+  }
+  S.replies=(S.replies||0)+1;
+}
+function askAI(name){document.getElementById('ai').scrollIntoView();$('#chatText').value=(S.lang==='ar'?'كيف أستخدم منصة ':'How do I use the ')+name+'؟';$('#chatText').focus()}
+$('#chatSend').onclick=aiSend;
+$('#chatText').addEventListener('keydown',e=>{if(e.key==='Enter')aiSend()});
+
+/* ---------- auth (demo, localStorage) ---------- */
+let authMode='login';
+$('#toggleAuth').onclick=e=>{e.preventDefault();authMode=authMode==='login'?'reg':'login';$('#doLogin').textContent=authMode==='login'?T('login'):(S.lang==='ar'?'إنشاء حساب':'Create account')};
+$('#loginBtn').onclick=()=>{if(localStorage.getItem('masar_user')){localStorage.removeItem('masar_user');applyFeatures();renderSchedule();$('#loginBtn').textContent=T('login');$('#loginBtn').classList.remove('logged');toast(S.lang==='ar'?'تم تسجيل الخروج':'Signed out')}else openModal('loginModal')};
+$('#doLogin').onclick=()=>{
+  const em=$('#loginEmail').value.trim().toLowerCase();if(!em){toast('⚠️');return}
+  const mem=(S.members||[]).find(m=>m.email===em);
+  if(mem&&mem.pass&&mem.pass!==$('#loginPass').value){toast('❌ '+T('wrongPass'));return}
+  localStorage.setItem('masar_user',em);
+  if(!S.users.find(u=>u.email===em))S.users.push({email:em,plan:'free',ts:Date.now()});
+  save();closeModal('loginModal');
+  $('#loginBtn').textContent='👤 '+em.split('@')[0];$('#loginBtn').classList.add('logged');
+  applyFeatures();renderSchedule();
+  toast((mem?T('memberWelcome')+' '+mem.name+' ('+mem.num+') — ':'')+(authMode==='login'?T('toastLogin'):T('toastAcc')));
+};
+function oauthStub(p){toast((S.lang==='ar'?'🔗 نقطة ربط ':'🔗 Integration point: ')+p+' OAuth — /auth/'+p.toLowerCase())}
+
+/* ---------- payments (stub) ---------- */
+const PLANS={semester:{ar:'تمريرة الفصل',en:'Semester Pass',p:'3.500'},annual:{ar:'التمريرة السنوية',en:'Annual Pass',p:'4.900'}};
+let curPlan='semester';
+function openPay(pl){curPlan=pl;const plan=PLANS[pl];
+  $('#payTitle').textContent=(S.lang==='ar'?'اشتراك: ':'Subscribe: ')+plan[S.lang]+' — '+plan.p+' '+T('omr');
+  $('#bankInfo').textContent=T('bankInfo');openModal('payModal')}
+$('#payBank').addEventListener('change',e=>{
+  const m={muscat:{ar:'🏦 بنك مسقط — الحساب الجاري 0000000000 — MASAR',nizwa:'🏦 بنك نزوى — الحساب 0000000000',ahli:'🏦 البنك الأهلي — الحساب 0000000000'},
+           nizwa:'',ahli:''};
+  const key=e.target.value;
+  $('#bankInfo').textContent=key==='thawani'?'🔗 Thawani Pay — نقطة ربط بوابة دفع (يتطلب حساب تاجر)':
+    key==='tap'?'🔗 Tap Payments Oman — نقطة ربط (يتطلب مفتاح API)':
+    S.lang==='ar'?'🏦 تفاصيل الحساب التوضيحية تظهر هنا بعد تفعيل البوابة الحقيقية وربط IBAN الحقيقي من لوحة الإدارة.':'🏦 Illustrative account details appear here after enabling the real gateway with the real IBAN in the admin panel.';
+});
+$('#paySubmit').onclick=()=>{
+  S.payments.push({plan:curPlan,bank:$('#payBank').value,name:$('#payName').value,phone:$('#payPhone').value,ref:$('#payRef').value,ts:Date.now()});
+  const u=localStorage.getItem('masar_user');
+  if(u){const uu=S.users.find(x=>x.email===u);if(uu)uu.plan=curPlan+'-pending'}
+  save();closeModal('payModal');toast(T('toastPay'));fillAdmin();
+};
+
+/* ---------- sponsors marquee ---------- */
+function renderMarquee(){
+  const m=$('#marquee');m.innerHTML='';
+  const items=(S.sponsors||[]);
+  [...items,...items].forEach(sp=>{
+    const d=document.createElement('div');d.className='sp-item';
+    if(sp.type==='image')d.innerHTML=`<img src="${sp.data}" alt=""><span>${sp.label||''}</span>`;
+    else if(sp.type==='video')d.innerHTML=`<video src="${sp.data}" autoplay muted loop playsinline></video><span>${sp.label||''}</span>`;
+    else d.textContent=sp.data;
+    m.appendChild(d);
+  });
+  if(!items.length)m.innerHTML=`<div class="sp-item">${S.lang==='ar'?'✦ مكان شركتك هنا — تواصل عبر واتساب':'✦ Your brand here — reach us on WhatsApp'}</div>`;
+}
+
+/* ---------- features & theme ---------- */
+const THEMES={gold:{g:'#D4A962',g2:'#B8904A'},teal:{g:'#6FC7B6',g2:'#4E9E8F'},rose:{g:'#E0A0A8',g2:'#B87880'}};
+function applyFeatures(){
+  const F=Object.assign({},S.features);
+  const cm=curMember();
+  if(cm){const P=cm.perms||{};F.ai=F.ai&&P.ai!==false;F.audio=F.audio&&P.audio!==false;F.subs=F.subs&&P.subs!==false;F.sched=F.sched&&P.sched!==false;}
+  $('#ai').style.display=F.ai?'':'none';
+  $('#schedule').style.display=F.sched?'':'none';
+  $('#subs').style.display=F.subs?'':'none';
+  $('#sponsors').style.display=F.sponsors?'':'none';
+  $('#audioDock').classList.toggle('hidden-dock',!F.audio);
+  const th=THEMES[S.theme]||THEMES.gold;
+  document.documentElement.style.setProperty('--gold',th.g);
+  document.documentElement.style.setProperty('--gold2',th.g2);
+  document.documentElement.style.setProperty('--accent',th.g);
+}
+
+/* ---------- modals ---------- */
+function openModal(id){$('#'+id).classList.add('open')}
+function closeModal(id){$('#'+id).classList.remove('open')}
+$$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+/* ---------- SECRET OWNER PANEL (PIN 76208, long-press logo 1.5s) ---------- */
+let pinBuf='',lpTimer;
+function startLongPress(){lpTimer=setTimeout(()=>{openModal('pinModal');pinBuf='';drawDots()},1500)}
+function cancelLP(){clearTimeout(lpTimer)}
+['#footLogo','#navLogo'].forEach(sel=>{
+  const el=$(sel);
+  el.addEventListener('pointerdown',startLongPress);
+  el.addEventListener('pointerup',cancelLP);el.addEventListener('pointerleave',cancelLP);
+});
+let holdCount=0;
+$('#navLogo').addEventListener('dblclick',()=>{if(++holdCount>=2){openModal('pinModal');pinBuf='';drawDots()}});
+const PINKEYS=['1','2','3','4','5','6','7','8','9','C','0','✓'];
+$('#pinPad').innerHTML=PINKEYS.map(k=>`<button class="oauth-btn" style="font-size:1.1rem" data-k="${k}">${k}</button>`).join('');
+function drawDots(){$$('#pinDots span').forEach((d,i)=>d.classList.toggle('on',i<pinBuf.length))}
+$('#pinPad').addEventListener('click',e=>{
+  const k=e.target.dataset.k;if(!k)return;
+  if(k==='C'){pinBuf=''}
+  else if(k==='✓'){
+    if(pinBuf===PIN){closeModal('pinModal');openAdmin()}
+    else{toast('❌ '+T('wrongPin'));pinBuf=''}
+  }else if(pinBuf.length<5)pinBuf+=k;
+  drawDots();
+});
+function openAdmin(){
+  openModal('admModal');fillAdmin();
+  const u=localStorage.getItem('masar_user');if(!$('#loginBtn').classList.contains('logged')&&u){}
+}
+/* admin tabs */
+$$('.adm-tabs button').forEach(b=>b.onclick=()=>{
+  $$('.adm-tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  $$('.adm-pane').forEach(p=>p.classList.remove('on'));$('#pane-'+b.dataset.tab).classList.add('on');
+});
+function fillAdmin(){
+  $('#admPromo').value=S.promo||'';
+  $('#admQuotes').value=(S.quotes[S.lang]||[]).join('\n');
+  $('#admSched').value=(S.schedule||[]).map(x=>[x.t,x.s,x.r].filter(Boolean).join(' | ')).join('\n');
+  $('#admApiKey').value=S.apiKey||'';$('#admApiUrl').value=S.apiUrl||DEF.apiUrl;$('#admTheme').value=S.theme;
+  $('#f_ai').checked=S.features.ai;$('#f_audio').checked=S.features.audio;$('#f_subs').checked=S.features.subs;
+  $('#f_sched').checked=S.features.sched;$('#f_sponsors').checked=S.features.sponsors;
+  renderSpList();renderTrkList();renderUsers();renderMembers();clearMemberForm();
+}
+$('#saveContent').onclick=()=>{
+  S.promo=$('#admPromo').value.trim();
+  S.quotes[S.lang]=$('#admQuotes').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  S.schedule=$('#admSched').value.split('\n').map(l=>{const[t,s,r]=l.split('|').map(x=>(x||'').trim());return t?{t,s:s||'',r:r||''}:null}).filter(Boolean);
+  save();applyPromo();renderSchedule();qi=0;renderQuote(true);toast(T('toastSaved'));
+};
+function applyPromo(){const b=$('#promoBar');if(S.promo){b.classList.add('show');$('#promoText').textContent='📢 '+S.promo}else b.classList.remove('show')}
+/* sponsors admin */
+$('#addSponsor').onclick=()=>{
+  const d=$('#spData').value.trim();if(!d){toast('⚠️');return}
+  S.sponsors.push({type:$('#spType').value,data:d,label:$('#spLabel').value.trim()});
+  save();renderSpList();renderMarquee();$('#spData').value='';$('#spLabel').value='';toast(T('toastSaved'));
+};
+function renderSpList(){
+  const l=$('#spList');l.innerHTML='';
+  (S.sponsors||[]).forEach((sp,i)=>{
+    const d=document.createElement('div');d.className='li';
+    d.innerHTML=`<span>${sp.type==='image'?'🖼':sp.type==='video'?'🎬':'✦'} ${(sp.label||sp.data||'').slice(0,40)}</span>`;
+    const b=document.createElement('button');b.className='del-btn';b.textContent='🗑';
+    b.onclick=()=>{S.sponsors.splice(i,1);save();renderSpList();renderMarquee()};
+    d.appendChild(b);l.appendChild(d);
+  });
+}
+/* tracks admin */
+$('#addTrack').onclick=()=>{
+  const n=$('#trkName').value.trim(),u=$('#trkUrl').value.trim();
+  if(!n||!u){toast('⚠️');return}
+  S.tracks.push({name:n,url:u});save();renderTrkList();$('#trkName').value='';$('#trkUrl').value='';toast(T('toastSaved'));
+};
+function renderTrkList(){
+  const l=$('#trkList');l.innerHTML='';
+  GEN.forEach((g,i)=>{const d=document.createElement('div');d.className='li';d.innerHTML=`<span>🎵 ${g.name} (${S.lang==='ar'?'مدمج':'built-in'})</span>`;l.appendChild(d)});
+  (S.tracks||[]).forEach((t,i)=>{
+    const d=document.createElement('div');d.className='li';d.innerHTML=`<span>🎵 ${t.name}</span>`;
+    const b=document.createElement('button');b.className='del-btn';b.textContent='🗑';
+    b.onclick=()=>{S.tracks.splice(i,1);save();renderTrkList()};
+    d.appendChild(b);l.appendChild(d);
+  });
+}
+/* ---------- members (leader-managed: ID + personal schedule + permissions) ---------- */
+function curMember(){const em=localStorage.getItem('masar_user');if(!em)return null;return (S.members||[]).find(m=>m.email===em)||null}
+function nextMemberNum(){let mx=0;(S.members||[]).forEach(m=>{const n=parseInt(String(m.num||'').replace(/\D/g,''))||0;if(n>mx)mx=n});return 'M-'+String(mx+1).padStart(3,'0')}
+let editingIdx=-1;
+function memberPerms(){return{ai:$('#pm_ai').checked,sched:$('#pm_sched').checked,audio:$('#pm_audio').checked,subs:$('#pm_subs').checked,pay:$('#pm_pay').checked}}
+function clearMemberForm(){editingIdx=-1;$('#mNum').value=nextMemberNum();$('#mName').value='';$('#mEmail').value='';$('#mPass').value='';$('#mSched').value='';$('#pm_ai').checked=true;$('#pm_sched').checked=true;$('#pm_audio').checked=true;$('#pm_subs').checked=true;$('#pm_pay').checked=false;$('#addMember').textContent=T('mAdd')}
+function parseSchedLines(txt){return String(txt||'').split('\n').map(x=>x.trim()).filter(Boolean).map(l=>{const p=l.split('|').map(x=>x.trim());return{t:p[0]||'',s:p[1]||'',r:p[2]||''}})}
+function renderMembers(){
+  const l=$('#memberList');l.innerHTML='';
+  if(!(S.members||[]).length){l.innerHTML='<div class="li">'+T('mNone')+'</div>';return}
+  const PN={ai:T('featAI'),sched:T('featSched'),audio:T('featAudio'),subs:T('featSubs'),pay:T('featPay')};
+  S.members.forEach((m,i)=>{
+    const d=document.createElement('div');d.className='li';
+    const perms=Object.keys(PN).filter(k=>m.perms&&m.perms[k]).map(k=>PN[k]).join(' · ')||'—';
+    d.innerHTML='<span>🪪 <b style="color:var(--gold)">'+m.num+'</b> '+(m.name||m.email)+'<br><small style="color:var(--ink-dim)">'+m.email+' — '+perms+'</small><br><small style="color:var(--ink-dim)">📅 '+((m.schedule||[]).length)+' '+(S.lang==='ar'?'حصة':'sessions')+'</small></span>'+
+      '<span style="display:flex;gap:6px"><button class="btn ghost" style="padding:6px 12px" data-ed="'+i+'">✏️</button><button class="btn ghost" style="padding:6px 12px" data-del="'+i+'">🗑️</button></span>';
+    d.querySelector('[data-ed]').onclick=()=>{
+      editingIdx=i;const m=S.members[i];
+      $('#mNum').value=m.num;$('#mName').value=m.name||'';$('#mEmail').value=m.email;$('#mPass').value=m.pass||'';
+      $('#mSched').value=(m.schedule||[]).map(x=>[x.t,x.s,x.r].filter(Boolean).join(' | ')).join('\n');
+      $('#pm_ai').checked=!!(m.perms&&m.perms.ai);$('#pm_sched').checked=!!(m.perms&&m.perms.sched);
+      $('#pm_audio').checked=!!(m.perms&&m.perms.audio);$('#pm_subs').checked=!!(m.perms&&m.perms.subs);
+      $('#pm_pay').checked=!!(m.perms&&m.perms.pay);
+      $('#addMember').textContent=T('mUpdate');
+    };
+    d.querySelector('[data-del]').onclick=()=>{
+      if(confirm(S.lang==='ar'?'حذف العضو '+m.num+'؟':'Delete member '+m.num+'?')){S.members.splice(i,1);save();renderMembers();clearMemberForm();toast(T('mDeleted'))}
+    };
+    l.appendChild(d);
+  });
+}
+$('#addMember').onclick=()=>{
+  const em=$('#mEmail').value.trim().toLowerCase();
+  if(!em){toast('⚠️');return}
+  const dup=S.members.findIndex((m,i)=>m.email===em&&i!==editingIdx);
+  if(dup>-1){toast('⚠️ '+T('mDup'));return}
+  const mem={num:$('#mNum').value||nextMemberNum(),name:$('#mName').value.trim(),email:em,pass:$('#mPass').value,perms:memberPerms(),schedule:parseSchedLines($('#mSched').value)};
+  if(editingIdx>-1)S.members[editingIdx]=mem;else S.members.push(mem);
+  save();renderMembers();clearMemberForm();toast('✅ '+T('mSaved'));applyFeatures();renderSchedule();
+};
+$('#clearMemberForm').onclick=clearMemberForm;
+
+/* users */
+function renderUsers(){
+  $('#stUsers').textContent=S.users.length;
+  $('#stSubs').textContent=S.users.filter(u=>u.plan&&u.plan!=='free').length;
+  $('#stPay').textContent=S.payments.length;
+  const l=$('#userList');l.innerHTML='';
+  if(!S.users.length&&!S.payments.length){l.innerHTML=`<div class="li">${S.lang==='ar'?'لا بيانات بعد':'No data yet'}</div>`;return}
+  S.users.forEach(u=>{const d=document.createElement('div');d.className='li';d.innerHTML=`<span>👤 ${u.email}</span><span style="color:var(--gold)">${u.plan}</span>`;l.appendChild(d)});
+  S.payments.forEach(p=>{const d=document.createElement('div');d.className='li';d.innerHTML=`<span>💳 ${p.name||'?'} — ${p.bank}</span><span>${PLANS[p.plan]?PLANS[p.plan][S.lang]:p.plan}</span>`;l.appendChild(d)});
+}
+/* settings */
+$('#saveSettings').onclick=()=>{
+  S.features={ai:$('#f_ai').checked,audio:$('#f_audio').checked,subs:$('#f_subs').checked,sched:$('#f_sched').checked,sponsors:$('#f_sponsors').checked};
+  S.theme=$('#admTheme').value;S.apiKey=$('#admApiKey').value.trim();S.apiUrl=$('#admApiUrl').value.trim();
+  save();applyFeatures();toast(T('toastSaved'));
+};
+$('#exportData').onclick=()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='masar-backup.json';a.click();
+};
+/* URL lang param (for screenshots/deep links) */
+const urlLang=new URLSearchParams(location.search).get('lang');
+if(urlLang)S.lang=urlLang;
+
+function goSec(id){try{const el=document.getElementById(id);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth'});}catch(e){}}
+
+/* ---------- boot ---------- */
+const skipSplash=new URLSearchParams(location.search).has('splash=0')||location.search.includes('splash=0');
+applyLang(S.lang);tick();renderSchedule();renderMarquee();applyFeatures();applyPromo();
+addMsg(T('chatWelcome'),'bot');$('#trackName').textContent=GEN[0].name;
+if(skipSplash){$('#splash').style.display='none';document.body.style.overflow='auto'}
+if(location.search.includes('autodemo')){setTimeout(()=>{const b=document.getElementById('enterBtn');if(b)b.click()},500)}
+
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
